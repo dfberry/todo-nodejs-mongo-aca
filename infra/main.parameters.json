@@ -22,6 +22,9 @@
     },
     "useAPIM": {
       "value": "${USE_APIM=false}"
+    },
+    "provisionAll": {
+      "value": "${PROVISION_ALL=false}"
     }
   }
 }

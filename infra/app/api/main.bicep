@@ -9,7 +9,7 @@ param containerRegistryName string
 param keyVaultName string
 param serviceName string = 'api'
 param corsAcaUrl string
-param exists bool
+param exists bool = false
 
 resource apiIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: identityName
@@ -17,7 +17,7 @@ resource apiIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-3
 }
 
 // Give the API access to KeyVault
-module apiKeyVaultAccess '../core/security/keyvault-access.bicep' = {
+module apiKeyVaultAccess '../../core/security/keyvault-access.bicep' = {
   name: 'api-keyvault-access'
   params: {
     keyVaultName: keyVaultName
@@ -25,7 +25,7 @@ module apiKeyVaultAccess '../core/security/keyvault-access.bicep' = {
   }
 }
 
-module app '../core/host/container-app-upsert.bicep' = {
+module app '../../core/host/container-app-upsert.bicep' = {
   name: '${serviceName}-container-app'
   dependsOn: [ apiKeyVaultAccess ]
   params: {
@@ -73,3 +73,4 @@ output SERVICE_API_IDENTITY_PRINCIPAL_ID string = apiIdentity.properties.princip
 output SERVICE_API_NAME string = app.outputs.name
 output SERVICE_API_URI string = app.outputs.uri
 output SERVICE_API_IMAGE_NAME string = app.outputs.imageName
+output REACT_APP_API_BASE_URL string = app.outputs.uri
